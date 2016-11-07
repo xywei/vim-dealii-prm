@@ -22,7 +22,8 @@ syntax match prmFloat "\v<\d*\.?\d+([Ee]-?)?\d+>"
 " Match operators
 syntax match prmOperator "[+-]"
 
-" Match subsections
+" Match subsection names
+syntax match prmSubsectionName "subsection\s*\w\+$"
 
 " Set highlights
 " :help group-name
@@ -34,5 +35,6 @@ highlight default link prmFloat Float
 highlight default link prmString String
 highlight default link prmOperator Operator
 highlight default link prmSubsection Structure
+highlight default link prmSubsectionName Function
 
 
