@@ -8,7 +8,7 @@
 " Match keywords
 syntax keyword prmKeywords set
 syntax keyword prmBoolean true false True False
-syntax keyword prmSubsection
+syntax keyword prmSubsection subsection end
 
 " Match comments
 syn match prmComment "#.*$"
