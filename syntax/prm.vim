@@ -23,7 +23,6 @@ syntax match prmNumber "\v<\d*\.?\d+([Ee]-?)?\d+>"
 syntax region prmString start=/"/ skip=/\\"/ end=/"/ oneline
 
 " Match subsections
-syntax region prmSubsection start=subsection end=end
 
 " Set highlights
 " :help group-name
