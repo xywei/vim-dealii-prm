@@ -17,35 +17,28 @@ setlocal foldlevel=20
 
 function! GetLineIndent(...)
   " Get the indent of line lnum.
-
   " check for optional second argument
   if a:0 > 0
     let lnum = a:1
   else
     let lnum = v:lnum
   end
-
   let topln = prevnonblank(lnum-1)
   if topln == 0
     return0
   endif
-
   let idtop = indent(topln)
   let idnow = indent(lnum)
   let indent = idtop
   let linetop = substitute(substitute(getline(topln),'\s\+$','',''),'^\s\+','','')
   let linenow = substitute(substitute(getline(lnum),'\s\+$','',''),'^\s\+','','')
-
   if linenow =~# '\v^\s*%(end)>'
     let indent = idnow <= idtop - &sw  ? idnow : idtop - &sw
   endif
-
   if linetop =~# '^\s*subsection\>'
     let indent = idnow >= idtop + &sw ? idnow : idtop + &sw
   endif
-
   return indent
-
 endfunction
 
 function! IsLineBlank(lnum)
@@ -72,16 +65,16 @@ function! PrmFoldExpr(...)
   " determin folding
   if lnum == 1
     " first line is always a fold (the root of the tree)
-    let f = '>'.GetLineIndent(nextnonblank(lnum+1))
+    let f = '>'.'1'
   elseif IsLineEndKeyword(lnum)
     " terminate the fold
-    let f = '<'.GetLineIndent(prevnonblank(lnum-1))
+    let f = '<'.'1'
   elseif GetLineIndent(lnum) < GetLineIndent(nextnonblank(lnum+1))
     " next line has greater indent, thus this line starts a new fold
-    let f = '>'.GetLineIndent(nextnonblank(lnum+1))
+    let f = '>'.'1'
   else
     " this is normal inner content, intelligently calculate ident
-    let f = GetLineIndent(lnum)
+    let f = GetLineIndent(lnum) > 0 ? 1 : 0
   endif
 endfunction
 
