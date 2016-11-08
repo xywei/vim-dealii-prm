@@ -2,6 +2,10 @@
 " Indent and folding
 " Language: prm
 
+setlocal autoindent sw=2 et
+setlocal indentexpr=GetLineIndent()
+setlocal indentkeys=o,O,*<Return>,=end
+
 setlocal foldmethod=expr
 setlocal foldexpr=PrmFoldExpr()
 
@@ -11,35 +15,36 @@ setlocal fillchars=  "
 " set this small (0~2) to start with some folds closed
 setlocal foldlevel=20
 
-function! GetLineIndent(lnum, ...)
+function! GetLineIndent(...)
   " Get the indent of line lnum.
-  " Blank lines are considered indented by the maximum of their surrounding
-  " lines' indents.
-  "
-  " The optional second argument is only used internally.
-  "   =  1 to have forward recursion.
-  "   = -1 to have backward recursion.
-  " The only difference is in blank lines. When left default, it takes the
-  " maximum in either direction.
-  "
+
   " check for optional second argument
   if a:0 > 0
-    let directionForward = a:1
+    let lnum = a:1
   else
-    let directionForward = 0
+    let lnum = v:lnum
   end
-  " dealing with blank lines
-  if IsLineBlank(a:lnum)
-    if directionForward == 0
-      return max([GetLineIndent(nextnonblank(a:lnum+1),1), GetLineIndent(prevnonblank(a:lnum-1),-1)])
-    elseif directionForward == 1
-      return GetLineIndent(nextnonblank(a:lnum+1), 1)
-    else " directionForward == -1
-      return GetLineIndent(prevnonblank(a:lnum-1), -1)
-    end
-  else
-    return indent(a:lnum)
+
+  let topln = prevnonblank(lnum-1)
+  if topln == 0
+    return0
   endif
+
+  let idtop = indent(topln)
+  let idnow = indent(lnum)
+  let linetop = substitute(substitute(getline(topln),'\s\+$','',''),'^\s\+','','')
+  let linenow = substitute(substitute(getline(lnum),'\s\+$','',''),'^\s\+','','')
+
+  if linenow =~# '\v^\s*%(end)>'
+    let indent = idnow < idtop ? idnow : idtop - &sw
+  endif
+
+  if linetop =~# '^\s*subsection\>'
+    let indent = idnow > idtop ? idnow : idtop + &sw
+  endif
+
+  return indent
+
 endfunction
 
 function! IsLineBlank(lnum)
