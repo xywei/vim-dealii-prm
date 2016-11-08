@@ -33,7 +33,7 @@ function! GetLineIndent(...)
   if IsLineEndKeyword(lnum)
     let indent = idnow <= idtop - &sw  ? idnow : idtop - &sw
   endif
-  if IsLineSubsectionKeyword(topln) 
+  if IsLineSubsectionKeyword(topln)
     let indent = idnow >= idtop + &sw ? idnow : idtop + &sw
   endif
   return indent
@@ -50,7 +50,7 @@ function! IsLineEndKeyword(...)
   return line =~# '\v^\s*%(end)>'
 endfunction
 
-function! IsLineSubsectionKeyword(lnum)
+function! IsLineSubsectionKeyword(...)
   " Returns 1 iff this line contains the subsection keyword
   if a:0 > 0
     let lnum = a:1
