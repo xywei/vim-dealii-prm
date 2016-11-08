@@ -1,14 +1,20 @@
 # vim-dealii-prm
 Neovim/Vim configuration for Deal.II's parameter files.
 
-Make sure to enable the following options in `.vimrc` (or `init.vim`
-for neovim).
+## Install via vim-plug
+
+Add the following line to your `init.vim` (or `.vimrc` for vim):
+
+```vim
+Plug 'xywei/vim-dealii-prm'
+```
+
+Make sure to enable the following options in your `init.vim` (or `.vimrc` for vim):
 
 ```vim
 syntax enable
 filetype plugin indent on
 ```
-
 ## Features
 
 * Syntax highlighting
