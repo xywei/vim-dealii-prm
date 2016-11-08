@@ -37,14 +37,24 @@ function! GetLineIndent(...)
   return indent
 endfunction
 
-function! IsLineEndKeyword(lnum)
+function! IsLineEndKeyword(...)
   " Returns 1 iff this line contains the end keyword
+  if a:0 > 0
+    let lnum = a:1
+  else
+    let lnum = v:lnum
+  end
   let line = substitute(substitute(getline(lnum),'\s\+$','',''),'^\s\+','','')
   return line =~# '\v^\s*%(end)>'
 endfunction
 
 function! IsLineSubsectionKeyword(lnum)
   " Returns 1 iff this line contains the subsection keyword
+  if a:0 > 0
+    let lnum = a:1
+  else
+    let lnum = v:lnum
+  end
   let line = substitute(substitute(getline(lnum),'\s\+$','',''),'^\s\+','','')
   return line =~# '\v^\s*%(subsection)>'
 endfunction
