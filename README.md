@@ -9,7 +9,9 @@ Add the following line to your `init.vim` (or `.vimrc` for vim):
 Plug 'xywei/vim-dealii-prm'
 ```
 
-Make sure to enable the following options in your `init.vim` (or `.vimrc` for vim):
+Then open neovim and run `PlugInstall`.
+
+Lastly, make sure to enable the following options in your `init.vim` (or `.vimrc` for vim):
 
 ```vim
 syntax enable
