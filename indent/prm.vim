@@ -27,7 +27,7 @@ function! GetLineIndent(...)
   if topln == 0
     return 0
   endif
-  let indent = idtop
+  let indent = indent(topln)
   if IsLineEndKeyword(lnum)
     let indent = idnow <= idtop - &sw  ? idnow : idtop - &sw
   endif
