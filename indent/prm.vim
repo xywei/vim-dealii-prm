@@ -32,15 +32,16 @@ function! GetLineIndent(...)
 
   let idtop = indent(topln)
   let idnow = indent(lnum)
+  let indent = idtop
   let linetop = substitute(substitute(getline(topln),'\s\+$','',''),'^\s\+','','')
   let linenow = substitute(substitute(getline(lnum),'\s\+$','',''),'^\s\+','','')
 
   if linenow =~# '\v^\s*%(end)>'
-    let indent = idnow < idtop ? idnow : idtop - &sw
+    let indent = idnow <= idtop - &sw  ? idnow : idtop - &sw
   endif
 
   if linetop =~# '^\s*subsection\>'
-    let indent = idnow > idtop ? idnow : idtop + &sw
+    let indent = idnow >= idtop + &sw ? idnow : idtop + &sw
   endif
 
   return indent
