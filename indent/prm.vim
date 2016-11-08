@@ -25,31 +25,28 @@ function! GetLineIndent(...)
   end
   let topln = prevnonblank(lnum-1)
   if topln == 0
-    return0
+    return 0
   endif
-  let idtop = indent(topln)
-  let idnow = indent(lnum)
   let indent = idtop
-  let linetop = substitute(substitute(getline(topln),'\s\+$','',''),'^\s\+','','')
-  let linenow = substitute(substitute(getline(lnum),'\s\+$','',''),'^\s\+','','')
-  if linenow =~# '\v^\s*%(end)>'
+  if IsLineEndKeyword(lnum)
     let indent = idnow <= idtop - &sw  ? idnow : idtop - &sw
   endif
-  if linetop =~# '^\s*subsection\>'
+  if IsLineSubsectionKeyword(topln) 
     let indent = idnow >= idtop + &sw ? idnow : idtop + &sw
   endif
   return indent
 endfunction
 
-function! IsLineBlank(lnum)
-  " Returns 1 iff this line is blank or contains only a comment
-  return getline(a:lnum)=~'^\s*\(#.*\)*$'
-endfunction
-
 function! IsLineEndKeyword(lnum)
   " Returns 1 iff this line contains the end keyword
-  " Possibly followed by a comment
-  return getline(a:lnum)=~'^\s*end\s*\(#.*\)*$'
+  let line = substitute(substitute(getline(lnum),'\s\+$','',''),'^\s\+','','')
+  return line =~# '\v^\s*%(end)>'
+endfunction
+
+function! IsLineSubsectionKeyword(lnum)
+  " Returns 1 iff this line contains the subsection keyword
+  let line = substitute(substitute(getline(lnum),'\s\+$','',''),'^\s\+','','')
+  return line =~# '\v^\s*%(subsection)>'
 endfunction
 
 function! PrmFoldExpr(...)
@@ -62,19 +59,14 @@ function! PrmFoldExpr(...)
   else
     let lnum = v:lnum
   endif
-  " determin folding
-  if lnum == 1
-    " first line is always a fold (the root of the tree)
-    let f = '>'.'1'
+  " determine folding
+  if IsLineSubsectionKeyword(lnum)
+    let f = '>1'
   elseif IsLineEndKeyword(lnum)
-    " terminate the fold
-    let f = '<'.'1'
-  elseif GetLineIndent(lnum) < GetLineIndent(nextnonblank(lnum+1))
-    " next line has greater indent, thus this line starts a new fold
-    let f = '>'.'1'
+    let f = '<1'
   else
     " this is normal inner content, intelligently calculate ident
-    let f = GetLineIndent(lnum) > 0 ? 1 : 0
+    let f = foldlevel(prevnonblank(lnum-1))
   endif
 endfunction
 
